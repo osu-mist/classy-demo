@@ -1,49 +1,63 @@
 <!DOCTYPE html>
-<title>Party Crasher - find classes that are meeting right now</title>
+<title>Party Crasher - find courses that are meeting right now</title>
 
 {% if courses %}
-  <p>
-    {% if courses|length == 1 %}
-      There is one {{ subject_name }} course meeting right now.
+  <big>
+    {{ random_course.attributes.subjectCourse }}
+    is meeting <em>right now</em> in
+    {% if meeting_time.buildingName %}
+      {{ meeting_time.buildingName }}.
     {% else %}
-      There are {{courses|length}} {{ subject_name }} courses meeting right now.
-    {% endif %}
-  </p>
-  <ul>
-    {% for course in courses %}
-      <li>
-        {{ course.attributes.subjectCourse }}<br> 
+      {{ meeting_time.building }} {{ meeting_time.room }}.
+    {%- endif -%}
+  </big>
 
-        Instructor:
-        {% for faculty in course.attributes.faculty if faculty.primaryFaculty %}
-          {{ faculty.displayName }}
-        {% else %}
-          no instructor
-        {% endfor %}
-        <br>
-
-        Times: 
-        {% for meet in course.attributes.meetingTimes 
-              if meet.startTime is not none %}
-          {% if meet.monday %}M{% endif -%}
-          {% if meet.tuesday %}T{% endif -%}
-          {% if meet.wednesday %}W{% endif -%}
-          {% if meet.thursday %}Th{% endif -%}
-          {% if meet.friday %}F{% endif %}
-
-          {{ meet.startTime }}-{{ meet.endTime }}
-          {{ meet.building }} {{ meet.room }}
-        {% endfor %}
-        <br>
-
-        <pre>{{ course | pprint }}</pre>
-      </li>
+  <p>
+    Instructor:
+    {% for faculty in random_course.attributes.faculty if faculty.primaryFaculty %}
+      {{ faculty.displayName }}
+    {% else %}
+      no instructor
     {% endfor %}
+  </p>
+
+  <p>
+    Meeting times:
+    <ul>
+      {% for meet in random_course.attributes.meetingTimes
+            if meet.startTime is not none %}
+        {% if meet.monday %}M{% endif -%}
+        {% if meet.tuesday %}T{% endif -%}
+        {% if meet.wednesday %}W{% endif -%}
+        {% if meet.thursday %}Th{% endif -%}
+        {% if meet.friday %}F{% endif %}
+
+        {{ meet.startTime }}-{{ meet.endTime }}
+        {{ meet.building }} {{ meet.room }}
+      {% endfor %}
+    </ul>
+  </p>
+
+
+  {% if number_of_courses > 1 %}
+    <small>
+      There are {{ number_of_courses }} other {{ subject_name }} courses
+      meeting right now.
+      Try <a>again</a>?
+    </small>
+  {% else %}
+    <small>
+      Not interested?
+      That's about it for {{ subject_name }} courses.
+      Try a <a>different subject</a>?
+    </small>
+  {% endif %}
   </ul>
 {% else %}
-  <p>
-    There are no classes meeting right now 😞
-  </p>
+  <big>
+    There are no {{ subject_name }} courses meeting right now. 😞
+    Try a <a>different subject</a>?
+  </big>
 {% endif %}
 
 {% if error %}
