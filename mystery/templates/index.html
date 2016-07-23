@@ -26,14 +26,16 @@
     <ul>
       {% for meet in random_course.attributes.meetingTimes
             if meet.startTime is not none %}
-        {% if meet.monday %}M{% endif -%}
-        {% if meet.tuesday %}T{% endif -%}
-        {% if meet.wednesday %}W{% endif -%}
-        {% if meet.thursday %}Th{% endif -%}
-        {% if meet.friday %}F{% endif %}
+        <li>
+          {% if meet.monday %}M{% endif -%}
+          {% if meet.tuesday %}T{% endif -%}
+          {% if meet.wednesday %}W{% endif -%}
+          {% if meet.thursday %}Th{% endif -%}
+          {% if meet.friday %}F{% endif %}
 
-        {{ meet.startTime }}-{{ meet.endTime }}
-        {{ meet.building }} {{ meet.room }}
+          {{ meet.startTime }}-{{ meet.endTime }}
+          {{ meet.building }} {{ meet.room }}
+        </li>
       {% endfor %}
     </ul>
   </p>

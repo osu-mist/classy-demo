@@ -1,6 +1,7 @@
 import os
 import random
-import time
+import re
+from datetime import datetime
 
 import flask
 from flask import request
@@ -10,6 +11,10 @@ from . import api
 TERM = '201603'
 SUBJECT = 'CS'
 SUBJECTNAME = 'Computer Science'
+
+DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+
+hour_re = re.compile(r'(?:[01][0-9]|2[0-3])(?:[0-5][0-9])')
 
 app = flask.Flask('mystery')
 app.config.from_object('mystery.defaults')
@@ -27,11 +32,18 @@ def index():
 
     courses = filter_courses(courses)
 
-    day = u'monday'
-    hour = u'1532'
+    now = datetime.now()
+    day = DAYS[now.weekday()]
+    hour = "{:02d}{:02d}".format(now.hour, now.minute)
     all = ('all' in request.args)
 
-    if 'all' not in request.args:
+    if 'day' in request.args and request.args['day'] in DAYS:
+        day = request.args['day']
+
+    if 'hour' in request.args and hour_re.match(request.args['hour']):
+        hour = request.args['hour']
+
+    if not all:
         courses = find_current_courses(courses, day, hour)
 
     if courses:
