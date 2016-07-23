@@ -21,6 +21,22 @@ class Client(object):
         self.endpoint = app.config['ENDPOINT']
         self.token_endpoint = self.endpoint + '/token'
 
+    def get_url(self, url, params=None):
+        access_token = self._get_access_token()
+        headers = {'Authorization': "Bearer "+access_token}
+        response = requests.get(url, params=params, headers=headers)
+
+        if response.status_code == 401:
+            raise AuthError('not authorized')
+        elif response.status_code == 404:
+            raise NotFoundError('key not found')
+        elif response.status_code == 400:
+            raise APIError(response.json())
+        elif response.status_code != 200:
+            raise Error('HTTP error')
+
+        return response.json()
+
     def search(self,
             term,
             subject,
@@ -28,8 +44,6 @@ class Client(object):
             q=None,
             page_size=None,
             page_number=None):
-
-        access_token = self._get_access_token()
 
         params = {
             'term': term,
@@ -44,19 +58,7 @@ class Client(object):
         if page_number is not None:
             params['page[number]'] = page_number
 
-        headers = {'Authorization': "Bearer "+access_token}
-        response = requests.get(self.endpoint, params=params, headers=headers)
-
-        if response.status_code == 401:
-            raise AuthError('not authorized')
-        elif response.status_code == 404:
-            raise NotFoundError('key not found')
-        elif response.status_code == 400:
-            raise APIError(response.json())
-        elif response.status_code != 200:
-            raise Error('HTTP error')
-
-        return response.json()
+        return self.get_url(self.endpoint, params=params)
 
     def _get_access_token(self):
         if self.token_endpoint is None:

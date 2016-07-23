@@ -1,6 +1,53 @@
 <!DOCTYPE html>
-<title>Hello</title>
-<p>Hello, world
-<pre>
-{{ result | pprint }}
-</pre>
+<title>Party Crasher - find classes that are meeting right now</title>
+
+{% if courses %}
+  <p>
+    {% if courses|length == 1 %}
+      There is one {{ subject_name }} course meeting right now.
+    {% else %}
+      There are {{courses|length}} {{ subject_name }} courses meeting right now.
+    {% endif %}
+  </p>
+  <ul>
+    {% for course in courses %}
+      <li>
+        {{ course.attributes.subjectCourse }}<br> 
+
+        Instructor:
+        {% for faculty in course.attributes.faculty if faculty.primaryFaculty %}
+          {{ faculty.displayName }}
+        {% else %}
+          no instructor
+        {% endfor %}
+        <br>
+
+        Times: 
+        {% for meet in course.attributes.meetingTimes 
+              if meet.startTime is not none %}
+          {% if meet.monday %}M{% endif -%}
+          {% if meet.tuesday %}T{% endif -%}
+          {% if meet.wednesday %}W{% endif -%}
+          {% if meet.thursday %}Th{% endif -%}
+          {% if meet.friday %}F{% endif %}
+
+          {{ meet.startTime }}-{{ meet.endTime }}
+          {{ meet.building }} {{ meet.room }}
+        {% endfor %}
+        <br>
+
+        <pre>{{ course | pprint }}</pre>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>
+    There are no classes meeting right now 😞
+  </p>
+{% endif %}
+
+{% if error %}
+  <p>
+    {{ error }}
+  </p>
+{% endif %}
