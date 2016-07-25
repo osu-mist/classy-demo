@@ -15,7 +15,7 @@ CAMPUS = 'C' # Corvallis
 SUBJECTS = {}
 DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
-hour_re = re.compile(r'(?:[01][0-9]|2[0-3])(?:[0-5][0-9])')
+time_re = re.compile(r'(?:[01][0-9]|2[0-3])(?:[0-5][0-9])')
 
 app = flask.Flask('mystery')
 app.config.from_object('mystery.defaults')
@@ -39,7 +39,7 @@ def index():
     subject = SUBJECT
     now = datetime.now()
     day = DAYS[now.weekday()]
-    hour = "{:02d}{:02d}".format(now.hour, now.minute)
+    time = "{:02d}{:02d}".format(now.hour, now.minute)
     all = ('all' in request.args) # for testing
 
     if 'subject' in request.args:
@@ -55,8 +55,8 @@ def index():
     if 'day' in request.args and request.args['day'] in DAYS:
         day = request.args['day']
 
-    if 'hour' in request.args and hour_re.match(request.args['hour']):
-        hour = request.args['hour']
+    if 'time' in request.args and time_re.match(request.args['time']):
+        time = request.args['time']
 
 
     try:
@@ -69,14 +69,14 @@ def index():
     courses = filter_courses(courses)
 
     if not all:
-        courses = find_current_courses(courses, day, hour)
+        courses = find_current_courses(courses, day, time)
 
     if courses:
         # choose a random course
         # TODO prefer large courses
         # TODO prefer courses that are not full
         random_course = random.choice(courses)
-        meeting_time = get_meeting_time(random_course, day, hour)
+        meeting_time = get_meeting_time(random_course, day, time)
         if all:
             meeting_time = random.choice(random_course[u'attributes'][u'meetingTimes'])
     else:
