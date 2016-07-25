@@ -1,5 +1,11 @@
+# virtualenv directories
 /bin
 /include
 /lib
 /local
+
+# package files
 /*.egg-info
+
+# configuration
+config.py
