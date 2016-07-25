@@ -6,16 +6,7 @@ possible use of the Classes API.
 
 Here's a screenshot:
 
-![ANS207 is meeting right now in Withycombe Hall.
-
-Instructor: Johnson, Janell
-
-Meeting times:
-    * M 1400-1500 WITH 217
-    * M 1600-1720 WITH 217
-
-That's about it for Animal Sciences courses right now. Try again later or try a different subject.
-](images/screenshot.png)
+<img src="images/screenshot.png" alt="ANS207 is meeting right now in Withycombe Hall.&#10;&#10;Instructor: Johnson, Janell&#10;&#10;Meeting times:&#10;    * M 1400-1500 WITH 217&#10;    * M 1600-1720 WITH 217&#10;&#10;That's about it for Animal Sciences courses right now. Try again later or try a different subject.">
 
 [Flask]: http://flask.pocoo.org/
 
