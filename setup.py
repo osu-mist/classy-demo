@@ -1,12 +1,12 @@
 from setuptools import setup
 
 setup(
-    name='mystery-app',
+    name='classy-demo',
     version='0.1',
     author='Andrew Ekstedt',
     author_email='ekstedta@oregonstate.edu',
     packages = [
-        'mystery',
+        'classy',
     ],
     install_requires = [
         'Flask>=0.10',

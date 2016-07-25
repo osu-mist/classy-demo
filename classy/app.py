@@ -17,10 +17,10 @@ DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sun
 
 time_re = re.compile(r'(?:[01][0-9]|2[0-3])(?:[0-5][0-9])')
 
-app = flask.Flask('mystery')
-app.config.from_object('mystery.defaults')
-if 'MYSTERY_CONFIG' in os.environ:
-    app.config.from_envvar('MYSTERY_CONFIG')
+app = flask.Flask('classy')
+app.config.from_object('classy.defaults')
+if 'CLASSY_CONFIG' in os.environ:
+    app.config.from_envvar('CLASSY_CONFIG')
 
 # TODO: use subjects API
 def load_subjects():

@@ -1,4 +1,4 @@
-# mystery.api - communicates with the class-search api
+# classy.api - communicates with the class-search api
 
 import requests
 from werkzeug.utils import cached_property
