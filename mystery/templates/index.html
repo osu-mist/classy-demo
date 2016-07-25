@@ -22,6 +22,8 @@
 
     {% if random_course %}
       <div class="course-info">
+        {# TODO: course title #}
+
         <p>
           Instructor:
           {% for faculty in random_course.attributes.faculty if faculty.primaryFaculty %}
@@ -30,6 +32,7 @@
             no instructor
           {% endfor %}
         </p>
+
         <p>
           Meeting times:
           <ul>
@@ -72,7 +75,7 @@
     <p>
       <small>
         {% if number_of_courses > 1 %}
-          There are {{ number_of_courses }} other {{ subject_name }} courses
+          There are {{ number_of_courses - 1 }} other {{ subject_name }} courses
           meeting right now.
           <a href="">Try again</a>?
           Or try a <a href="?subject=random">different subject</a>.

@@ -40,7 +40,6 @@ def index():
     now = datetime.now()
     day = DAYS[now.weekday()]
     time = "{:02d}{:02d}".format(now.hour, now.minute)
-    all = ('all' in request.args) # for testing
 
     if 'subject' in request.args:
         if request.args['subject'] in SUBJECTS:
@@ -67,9 +66,7 @@ def index():
         courses = []
 
     courses = filter_courses(courses)
-
-    if not all:
-        courses = find_current_courses(courses, day, time)
+    courses = find_current_courses(courses, day, time)
 
     if courses:
         # choose a random course
@@ -77,8 +74,6 @@ def index():
         # TODO prefer courses that are not full
         random_course = random.choice(courses)
         meeting_time = get_meeting_time(random_course, day, time)
-        if all:
-            meeting_time = random.choice(random_course[u'attributes'][u'meetingTimes'])
     else:
         random_course = None
         meeting_time = None
@@ -86,7 +81,6 @@ def index():
     return flask.render_template('index.html',
         random_course=random_course,
         meeting_time=meeting_time,
-        courses=courses,
         subject_name=subject_name,
         number_of_courses=len(courses),
         error=error)
@@ -110,6 +104,7 @@ def get_all_courses(term, subject):
     return courses
 
 def filter_courses(courses):
+    """Filter out courses that aren't offered or have no meeting times"""
     return [ course for course in courses if common_sense(course) ]
 
 def common_sense(course):
@@ -126,10 +121,13 @@ def common_sense(course):
     return True
 
 def find_current_courses(courses, day, time):
+    """Filter courses which meet on the given day and time
+
+    day is monday, tuesday, wednesday, thursday, friday, saturday, or sunday.
+    time is HHMM string
+    """
     return [ course for course in courses if meets_at(course, day, time) ]
 
-# day is monday, tuesday, wednesday, thursday, friday, saturday, or sunday.
-# time is HHMM string
 def meets_at(course, day, time):
     for meet in course[u'attributes'].get(u'meetingTimes', []):
         if meet.get(day, False) and meet[u'startTime'] <= time <= meet[u'endTime']:
