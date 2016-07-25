@@ -75,12 +75,14 @@
           There are {{ number_of_courses }} other {{ subject_name }} courses
           meeting right now.
           <a href="">Try again</a>?
+          Or try a <a href="?subject=random">different subject</a>.
         {% elif number_of_courses == 1 %}
-          Not interested?
-          That's about it for {{ subject_name }} courses.
-          Try a <a>different subject</a>?
+          That's about it for {{ subject_name }} courses right now.
+          Try again later or
+          try a <a href="?subject=random">different subject</a>.
         {% elif number_of_courses == 0 %}
-          Sorry. Try a <a href=".">different subject</a>?
+          Sorry. Try again later
+          or try <a href="?subject=random">different subject</a>.
         {% endif %}
       </small>
     </p>
