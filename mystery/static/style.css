@@ -1,0 +1,18 @@
+body { font: 16px sans-serif; text-align: center; }
+body { color: #373737; background: #C34500; }
+
+.container { width: 750px; margin: auto; }
+
+main { color: #373737; background: #F3D08E; }
+main { border-radius: 2em; padding: 1px; margin: 0; }
+
+main .main-text { margin: 1em .2em; }
+main small { color: #9D601E; }
+
+main + footer p { margin-top: .2em; }
+
+big { font-size: 200%; }
+small { font-size: 80%; }
+
+a { color: inherit; text-decoration: underline; }
+a:hover { color: #385E86; transition: color 1s; }

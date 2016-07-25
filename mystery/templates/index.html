@@ -1,69 +1,105 @@
 <!DOCTYPE html>
 <title>Party Crasher - find courses that are meeting right now</title>
+<link rel="stylesheet" href="{{url_for("static", filename='style.css')}}">
 
-{% if courses %}
-  <big>
-    {{ random_course.attributes.subjectCourse }}
-    is meeting <em>right now</em> in
-    {% if meeting_time.buildingName %}
-      {{ meeting_time.buildingName }}.
-    {% else %}
-      {{ meeting_time.building }} {{ meeting_time.room }}.
-    {%- endif -%}
-  </big>
+<div class=container>
+  <main>
+    <p class="main-text">
+      <big>
+        {% if random_course %}
+          {{ random_course.attributes.subjectCourse }}
+          is meeting <em>right now</em> in
+          {% if meeting_time.buildingName %}
+            {{ meeting_time.buildingName }}.
+          {% else %}
+            {{ meeting_time.building }} {{ meeting_time.room }}.
+          {% endif %}
+        {% else %}
+          There are no {{ subject_name }} courses meeting right now. 😞
+        {% endif %}
+      </big>
+    </p>
 
-  <p>
-    Instructor:
-    {% for faculty in random_course.attributes.faculty if faculty.primaryFaculty %}
-      {{ faculty.displayName }}
-    {% else %}
-      no instructor
-    {% endfor %}
-  </p>
+    {% if random_course %}
+      <div class="course-info">
+        <p>
+          Instructor:
+          {% for faculty in random_course.attributes.faculty if faculty.primaryFaculty %}
+            {{ faculty.displayName }}
+          {% else %}
+            no instructor
+          {% endfor %}
+        </p>
+        <p>
+          Meeting times:
+          <ul>
+            {% for meet in random_course.attributes.meetingTimes
+                  if meet.startTime is not none %}
+              <li>
+                {% if meet.monday %}M{% endif -%}
+                {% if meet.tuesday %}T{% endif -%}
+                {% if meet.wednesday %}W{% endif -%}
+                {% if meet.thursday %}Th{% endif -%}
+                {% if meet.friday %}F{% endif %}
 
-  <p>
-    Meeting times:
-    <ul>
-      {% for meet in random_course.attributes.meetingTimes
-            if meet.startTime is not none %}
-        <li>
-          {% if meet.monday %}M{% endif -%}
-          {% if meet.tuesday %}T{% endif -%}
-          {% if meet.wednesday %}W{% endif -%}
-          {% if meet.thursday %}Th{% endif -%}
-          {% if meet.friday %}F{% endif %}
+                {{ meet.startTime }}-{{ meet.endTime }}
+                {{ meet.building }} {{ meet.room }}
+              </li>
+            {% endfor %}
+          </ul>
+        </p>
+      </div>
+    {% endif %}
 
-          {{ meet.startTime }}-{{ meet.endTime }}
-          {{ meet.building }} {{ meet.room }}
-        </li>
-      {% endfor %}
-    </ul>
-  </p>
+    {#
 
+      Homepage:
 
-  {% if number_of_courses > 1 %}
-    <small>
-      There are {{ number_of_courses }} other {{ subject_name }} courses
-      meeting right now.
-      Try <a>again</a>?
-    </small>
-  {% else %}
-    <small>
-      Not interested?
-      That's about it for {{ subject_name }} courses.
-      Try a <a>different subject</a>?
-    </small>
-  {% endif %}
-  </ul>
-{% else %}
-  <big>
-    There are no {{ subject_name }} courses meeting right now. 😞
-    Try a <a>different subject</a>?
-  </big>
-{% endif %}
+        Try again.
+        Choose a subject.
 
-{% if error %}
-  <p>
-    {{ error }}
-  </p>
-{% endif %}
+      with an explicit subject:
+
+        try again
+        try a random subject
+        choose a different subject
+
+      with an explicit subject and no classes:
+
+        try a random subject
+
+    #}
+    <p>
+      <small>
+        {% if number_of_courses > 1 %}
+          There are {{ number_of_courses }} other {{ subject_name }} courses
+          meeting right now.
+          <a href="">Try again</a>?
+        {% elif number_of_courses == 1 %}
+          Not interested?
+          That's about it for {{ subject_name }} courses.
+          Try a <a>different subject</a>?
+        {% elif number_of_courses == 0 %}
+          Sorry. Try a <a href=".">different subject</a>?
+        {% endif %}
+      </small>
+    </p>
+
+    {% if error %}
+      <p>
+        <small>
+          (Got an error: {{ error.message }})
+        </small>
+      </p>
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>
+      <small>
+        Provided for entertainment only |
+        <a>View the source code</a>
+      </small>
+    </p>
+  </footer>
+</div>
