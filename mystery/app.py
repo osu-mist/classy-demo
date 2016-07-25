@@ -26,7 +26,7 @@ if 'MYSTERY_CONFIG' in os.environ:
 def load_subjects():
     for line in app.open_resource('subjects'):
         line = line.strip()
-        paren = line.index('(')
+        paren = line.rindex('(')
         name = line[:paren].strip()
         code = line[paren+1:-1].strip()
         SUBJECTS[code] = name
