@@ -1,6 +1,7 @@
 # mystery.api - communicates with the class-search api
 
 import requests
+from werkzeug.utils import cached_property
 
 class Error(Exception):
     """API error base class"""
@@ -22,7 +23,7 @@ class Client(object):
         self.token_endpoint = self.endpoint + '/token'
 
     def get_url(self, url, params=None):
-        access_token = self._get_access_token()
+        access_token = self.access_token
         headers = {'Authorization': "Bearer "+access_token}
         response = requests.get(url, params=params, headers=headers)
 
@@ -59,6 +60,10 @@ class Client(object):
             params['page[number]'] = page_number
 
         return self.get_url(self.endpoint, params=params)
+
+    @cached_property
+    def access_token(self):
+        return self._get_access_token()
 
     def _get_access_token(self):
         if self.token_endpoint is None:
