@@ -39,3 +39,11 @@ Running
 
 Note that the path to the configuration file in `CLASSY_CONFIG`
 is relative to the package directory (./classy in this example).
+
+BUGS
+----
+
+ * course titles are not shown because they are not yet returned by the API
+ * subjects are hardcoded; they should be fetched using the course subjects API
+ * retrieves the full course list on every request; should add some caching
+ * could be smarter about choosing random subjects and courses
