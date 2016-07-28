@@ -58,28 +58,14 @@
       </div>
     {% endif %}
 
-    {#
-
-      Homepage:
-
-        Try again.
-        Choose a subject.
-
-      with an explicit subject:
-
-        try again
-        try a random subject
-        choose a different subject
-
-      with an explicit subject and no classes:
-
-        try a random subject
-
-    #}
     <p>
       <small>
         {% if number_of_courses > 1 %}
-          There are {{ number_of_courses - 1 }} other {{ subject_name }} courses
+          {% if number_of_courses == 2 %}
+            There is one other {{ subject_name }} course
+          {% else %}
+            There are {{ number_of_courses - 1 }} other {{ subject_name }} courses
+          {% endif %}
           meeting right now.
           <a href="">Try again</a>?
           Or try a <a href="?subject=random">different subject</a>.
