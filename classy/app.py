@@ -108,12 +108,20 @@ def filter_courses(courses):
     return [ course for course in courses if common_sense(course) ]
 
 def common_sense(course):
+    if not isinstance(course.get(u'attributes'), dict):
+        return False
+
+    # Filter out non-lecture classes
+    if course[u'attributes'].get(u'scheduleTypeDescription', u'') != u'Lecture':
+        return False
+
     # Filter out courses that aren't even being offered
-    # or are somebody's thesis or something
+    # or are super small
     if course[u'attributes'].get(u'maximumEnrollment') < 10:
         return False
 
     # Filter out courses with no meeting times
+    # (such as ecampus classes)
     times = course[u'attributes'].get(u'meetingTimes', [])
     if not any(meet.get('startTime') is not None for meet in times):
         return False
