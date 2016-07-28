@@ -22,7 +22,11 @@
 
     {% if random_course %}
       <div class="course-info">
-        {# TODO: course title #}
+        <p>
+          Title:
+          {{ random_course.attributes.subjectCourse }}
+          {{ random_course.attributes.courseTitle }}
+        </p>
 
         <p>
           Instructor:
@@ -85,7 +89,7 @@
           try a <a href="?subject=random">different subject</a>.
         {% elif number_of_courses == 0 %}
           Sorry. Try again later
-          or try <a href="?subject=random">different subject</a>.
+          or try a <a href="?subject=random">different subject</a>.
         {% endif %}
       </small>
     </p>
