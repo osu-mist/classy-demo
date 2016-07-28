@@ -34,6 +34,8 @@ def load_subjects():
 load_subjects()
 assert SUBJECT in SUBJECTS
 
+_course_cache = {}
+
 @app.route('/')
 def index():
     subject = SUBJECT
@@ -58,14 +60,18 @@ def index():
         time = request.args['time']
 
 
-    try:
-        courses = get_all_courses(TERM, subject)
-        error = None
-    except api.APIError as e:
-        error = e.message
-        courses = []
+    error = None
+    if subject not in _course_cache:
+        try:
+            courses = get_all_courses(TERM, subject)
+        except api.APIError as e:
+            error = e.message
+            courses = []
+        else:
+            courses = filter_courses(courses)
+            _course_cache[subject] = courses
 
-    courses = filter_courses(courses)
+    courses = _course_cache[subject]
     courses = find_current_courses(courses, day, time)
 
     if courses:
