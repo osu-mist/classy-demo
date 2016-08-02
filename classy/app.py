@@ -9,8 +9,6 @@ from flask import request
 from . import api
 
 TERM = '201603'
-SUBJECT = 'CS'
-CAMPUS = 'C' # Corvallis
 
 SUBJECTS = {}
 DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
@@ -39,32 +37,32 @@ def load_subjects():
             continue
         SUBJECTS[abbr] = title
 
-    assert SUBJECT in SUBJECTS
-
 _course_cache = {}
 
 @app.route('/')
 def index():
-    subject = SUBJECT
+    subject = 'random'
     now = datetime.now()
     day = DAYS[now.weekday()]
     time = "{:02d}{:02d}".format(now.hour, now.minute)
 
     if 'subject' in request.args:
-        if request.args['subject'] in SUBJECTS:
+        if request.args['subject'] in SUBJECTS or request.args['subject'] == 'random':
             subject = request.args['subject']
-        elif request.args['subject'] == 'random':
-            # TODO don't choose a subject with no classes
-            subject = random.choice(SUBJECTS.keys())
-            return flask.redirect(flask.url_for('index', subject=subject))
-
-    subject_name = SUBJECTS[subject]
 
     if 'day' in request.args and request.args['day'] in DAYS:
         day = request.args['day']
 
     if 'time' in request.args and time_re.match(request.args['time']):
         time = request.args['time']
+
+
+    if subject == 'random':
+        # TODO don't choose a subject with no classes
+        subject = random.choice(SUBJECTS.keys())
+        return flask.redirect(flask.url_for('index', subject=subject))
+
+    subject_name = SUBJECTS[subject]
 
 
     error = None
