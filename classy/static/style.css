@@ -8,6 +8,7 @@ main { border-radius: 2em; padding: 1px; margin: 0; }
 
 main .main-text { margin: 2em 2em 1em; }
 main .course-info { display: inline-block; text-align: left; }
+main .subject-list { display: inline-block; text-align: left; }
 main small { color: #9D601E; }
 
 main + footer p { margin-top: .2em; }

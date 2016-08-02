@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<title>Classy - pick a subjects</title>
+<link rel="stylesheet" href="{{url_for("static", filename='style.css')}}">
+
+<div class=container>
+  <main>
+    <ul class="subject-list">
+      {% for abbr, title in subjects|dictsort(true) %}
+        <li><a href="{{ url_for('index', subject=abbr) }}">{{ abbr }} - {{ title }}</a></li>
+      {% endfor %}
+    </ul>
+  </main>
+
+  <footer>
+    <p>
+      <small>
+        Provided for entertainment only |
+        <a href="https://github.com/osu-mist/classy-demo">View the source code</a>
+      </small>
+    </p>
+  </footer>
+</div>

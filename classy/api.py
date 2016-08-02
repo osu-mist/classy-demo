@@ -9,9 +9,6 @@ class Error(Exception):
 class AuthError(Error):
     """Not authorized"""
 
-class NotFoundError(Error):
-    """Not found"""
-
 class APIError(Error):
     """developer error"""
 
@@ -20,7 +17,7 @@ class Client(object):
         self.client_id = app.config['CLIENT_ID']
         self.client_secret = app.config['CLIENT_SECRET']
         self.endpoint = app.config['ENDPOINT']
-        self.token_endpoint = self.endpoint + '/token'
+        self.token_endpoint = self.endpoint + '/class-search/token'
 
     def get_url(self, url, params=None):
         access_token = self.access_token
@@ -29,8 +26,6 @@ class Client(object):
 
         if response.status_code == 401:
             raise AuthError('not authorized')
-        elif response.status_code == 404:
-            raise NotFoundError('key not found')
         elif response.status_code == 400:
             raise APIError(response.json())
         elif response.status_code != 200:
@@ -38,7 +33,7 @@ class Client(object):
 
         return response.json()
 
-    def search(self,
+    def courses(self,
             term,
             subject,
             course_number=None,
@@ -59,7 +54,13 @@ class Client(object):
         if page_number is not None:
             params['page[number]'] = page_number
 
-        return self.get_url(self.endpoint, params=params)
+        return self.get_url(self.endpoint+"/class-search", params=params)
+
+    def open_terms(self):
+        return self.get_url(self.endpoint+"/terms/open")
+
+    def subjects(self):
+        return self.get_url(self.endpoint+"/course-subjects")
 
     @cached_property
     def access_token(self):

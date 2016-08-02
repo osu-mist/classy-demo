@@ -22,17 +22,24 @@ app.config.from_object('classy.defaults')
 if 'CLASSY_CONFIG' in os.environ:
     app.config.from_envvar('CLASSY_CONFIG')
 
-# TODO: use subjects API
+@app.before_first_request
 def load_subjects():
-    for line in app.open_resource('subjects'):
-        line = line.strip()
-        paren = line.rindex('(')
-        name = line[:paren].strip()
-        code = line[paren+1:-1].strip()
-        SUBJECTS[code] = name
+    SUBJECTS.clear()
+    client = api.Client(app)
+    # TODO error handling
+    response = client.subjects()
+    for subject in response['data']:
+        abbr = subject[u'attributes'][u'abbreviation']
+        title = subject[u'attributes'][u'title']
+        if abbr == '0000':
+            # Subject Unknown
+            continue
+        if title.startswith(u'OS/'):
+            # overseas studies
+            continue
+        SUBJECTS[abbr] = title
 
-load_subjects()
-assert SUBJECT in SUBJECTS
+    assert SUBJECT in SUBJECTS
 
 _course_cache = {}
 
@@ -91,6 +98,11 @@ def index():
         number_of_courses=len(courses),
         error=error)
 
+@app.route('/subjects')
+def list_subjects():
+    return flask.render_template('subjects.html',
+        subjects=SUBJECTS)
+
 def get_all_courses(term, subject):
     # TODO: cache
     courses = []
@@ -98,12 +110,11 @@ def get_all_courses(term, subject):
 
     page_number = 1
     while True:
-        result = client.search(term, subject, page_size=100, page_number=page_number)
+        result = client.courses(term, subject, page_size=100, page_number=page_number)
         if u'data' not in result or u'links' not in result:
             raise ValueError('invalid results returned from class search')
         courses.extend(result[u'data'])
-        next = result[u'links'].get(u'next')
-        if next is None:
+        if not result[u'links'] or not result[u'links'][u'next']:
             break
         page_number += 1
 

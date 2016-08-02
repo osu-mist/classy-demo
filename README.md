@@ -43,7 +43,6 @@ is relative to the package directory (./classy in this example).
 BUGS
 ----
 
- * subjects are hardcoded; they should be fetched using the course subjects API
  * retrieves the full course list on every request; should add some caching
  * could be smarter about choosing random subjects and courses
  * doesn't understand that finals only meet during finals week
