@@ -1,6 +1,7 @@
 # classy.api - communicates with the class-search api
 
 import requests
+import urllib
 from werkzeug.utils import cached_property
 
 class Error(Exception):
@@ -55,6 +56,9 @@ class Client(object):
             params['page[number]'] = page_number
 
         return self.get_url(self.endpoint+"/class-search", params=params)
+
+    def term(self, id):
+        return self.get_url(self.endpoint+"/terms/"+urllib.quote(id))
 
     def open_terms(self):
         return self.get_url(self.endpoint+"/terms/open")

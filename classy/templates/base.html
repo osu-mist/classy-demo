@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<title>{% block title %}Classy - find courses that are meeting right now{% endblock %}</title>
+<link rel="stylesheet" href="{{url_for("static", filename='style.css')}}">
+
+<div class=container>
+  {% block body %}{% endblock %}
+  <footer>
+    <p>
+      <small>
+        Provided for entertainment only |
+        <a href="https://github.com/osu-mist/classy-demo">View the source code</a>
+      </small>
+    </p>
+  </footer>
+</div>

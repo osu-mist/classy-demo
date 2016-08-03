@@ -8,10 +8,9 @@ from flask import request
 
 from . import api
 
-TERM = '201603'
-
 SUBJECTS = {}
 DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+_current_term = None
 
 time_re = re.compile(r'(?:[01][0-9]|2[0-3])(?:[0-5][0-9])')
 
@@ -37,14 +36,70 @@ def load_subjects():
             continue
         SUBJECTS[abbr] = title
 
-_course_cache = {}
+def get_current_term(client, _now=datetime.now):
+    """Fetch the term object for the term which is currently in session.
+       Returns None if no term is in session"""
+
+    global _current_term
+
+    # do we already know the current term?
+    today = _now().strftime("%Y-%m-%d")
+    if _current_term:
+        if today < _current_term[u'attributes'][u'startDate']:
+            # the current term hasn't started yet
+            return None
+        elif today <= _current_term[u'attributes'][u'endDate']:
+            # this is the current term
+            return _current_term
+        else:
+            # the current term is over
+            _current_term = None
+
+    # we don't know what the current term is
+
+    # fetch the list of open terms
+    terms = client.open_terms()
+    terms = terms.get(u'data', [])
+
+    # fetch the actual term data
+    # XXX
+    for i, term in enumerate(terms):
+        terms[i] = client.term(term[u'id']).get(u'data', {})
+
+    # try to find the term that's happening right now
+    for term in terms:
+        start_date = term[u'attributes'].get(u'startDate', u'xxx')
+        end_date = term[u'attributes'].get(u'endDate', u'xxx')
+        if start_date <= today <= end_date:
+            _current_term = term
+            return _current_term
+
+    # if there are no terms open right now,
+    # set the current term to the next closest term
+    # and return None
+    terms.sort(key=lambda x: x[u'attributes'][u'startDate'])
+    for term in terms:
+        if today < term[u'attributes'].get(u'startDate'):
+            _current_term = term
+            return None
+
+    # struck out
+    _current_term = None
+    return None
 
 @app.route('/')
 def index():
+    term_code = None
     subject = 'random'
     now = datetime.now()
     day = DAYS[now.weekday()]
     time = "{:02d}{:02d}".format(now.hour, now.minute)
+
+    # Parse query args
+    # With the exception of subject,
+    # these are mostly for testing
+    if 'term' in request.args:
+        term_code = request.args['term']
 
     if 'subject' in request.args:
         if request.args['subject'] in SUBJECTS or request.args['subject'] == 'random':
@@ -57,6 +112,19 @@ def index():
         time = request.args['time']
 
 
+    client = api.Client(app)
+
+    if term_code is not None:
+        term = client.term(term_code)[u'data']
+        if term[u'id'] is None:
+            # XXX not the right error message,
+            # but term= is just a debugging param anyway
+            return flask.render_template('noterms.html')
+    else:
+        term = get_current_term(client)
+        if term is None:
+            return flask.render_template('noterms.html')
+
     if subject == 'random':
         # TODO don't choose a subject with no classes
         subject = random.choice(SUBJECTS.keys())
@@ -66,17 +134,14 @@ def index():
 
 
     error = None
-    if subject not in _course_cache:
-        try:
-            courses = get_all_courses(TERM, subject)
-        except api.APIError as e:
-            error = e.message
-            courses = []
-        else:
-            courses = filter_courses(courses)
-            _course_cache[subject] = courses
+    try:
+        courses = get_all_courses(client, term[u'id'], subject)
+    except api.APIError as e:
+        error = e.message
+        courses = []
+    else:
+        courses = filter_courses(courses)
 
-    courses = _course_cache[subject]
     courses = find_current_courses(courses, day, time)
 
     if courses:
@@ -94,6 +159,7 @@ def index():
         meeting_time=meeting_time,
         subject_name=subject_name,
         number_of_courses=len(courses),
+        current_term=term,
         error=error)
 
 @app.route('/subjects')
@@ -101,10 +167,9 @@ def list_subjects():
     return flask.render_template('subjects.html',
         subjects=SUBJECTS)
 
-def get_all_courses(term, subject):
+def get_all_courses(client, term, subject):
     # TODO: cache
     courses = []
-    client = api.Client(app)
 
     page_number = 1
     while True:

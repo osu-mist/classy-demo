@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<title>Classy - find courses that are meeting right now</title>
-<link rel="stylesheet" href="{{url_for("static", filename='style.css')}}">
-
-<div class=container>
+{% extends "base.html" %}
+{% block body %}
   <main>
     <p class="main-text">
       <big>
@@ -35,6 +32,11 @@
           {% else %}
             no instructor
           {% endfor %}
+        </p>
+
+        <p>
+          Term:
+          {{ current_term.attributes.description }}
         </p>
 
         <p>
@@ -83,18 +85,15 @@
     {% if error %}
       <p>
         <small>
-          (Got an error: {{ error.message }})
+          {% if error.userMessage %}
+            (Got an error: {{ error.userMessage }})
+            <!-- {{ error.developerMessage }} -->
+          {% else %}
+            (Got an error: {{ error }})
+          {% endif %}
         </small>
       </p>
     {% endif %}
+    {{ current_term }}
   </main>
-
-  <footer>
-    <p>
-      <small>
-        Provided for entertainment only |
-        <a href="https://github.com/osu-mist/classy-demo">View the source code</a>
-      </small>
-    </p>
-  </footer>
-</div>
+{% endblock %}

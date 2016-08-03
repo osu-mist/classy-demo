@@ -21,7 +21,8 @@ Installation
 Configuration
 ----
 
-Register an application to use the Class Search API 
+Register an application to use the
+Class Search API, Course Subjects API, and Terms API
 at the [OSU Developer Portal][].
 
 Create a file called config.py containing your Client ID 
@@ -31,6 +32,13 @@ and Client Secret.
     CLIENT_SECRET="yourclientsecret"
 
 [OSU Developer Portal]: https://developer.oregonstate.edu/
+
+Testing
+----
+
+    % bin/python -m classy.tests
+
+This will run the unit tests for Classy.
 
 Running
 ----
