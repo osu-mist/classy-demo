@@ -3,6 +3,8 @@ import random
 import re
 from datetime import datetime
 
+import lru
+
 import flask
 from flask import request
 
@@ -11,6 +13,7 @@ from . import api
 SUBJECTS = {}
 DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 _current_term = None
+_course_cache = lru.LRU(100)
 
 time_re = re.compile(r'(?:[01][0-9]|2[0-3])(?:[0-5][0-9])')
 
@@ -112,6 +115,7 @@ def index():
         time = request.args['time']
 
 
+    # Fetch the current term,
     client = api.Client(app)
 
     if term_code is not None:
@@ -125,6 +129,7 @@ def index():
         if term is None:
             return flask.render_template('noterms.html')
 
+    # Choose a random subject, if necessary
     if subject == 'random':
         # TODO don't choose a subject with no classes
         subject = random.choice(SUBJECTS.keys())
@@ -132,18 +137,26 @@ def index():
 
     subject_name = SUBJECTS[subject]
 
-
+    # Fetch the course list
+    # or retrieve from cache
     error = None
-    try:
-        courses = get_all_courses(client, term[u'id'], subject)
-    except api.APIError as e:
-        error = e.message
-        courses = []
+    cache_key = term[u'id'], subject
+    if cache_key in _course_cache:
+        courses = _course_cache[cache_key]
     else:
-        courses = filter_courses(courses)
+        try:
+            courses = get_all_courses(client, term[u'id'], subject)
+        except api.APIError as e:
+            error = e.message
+            courses = []
+        else:
+            courses = filter_courses(courses)
+            _course_cache[cache_key] = courses
 
+    # Select just the courses happening now
     courses = find_current_courses(courses, day, time)
 
+    # Choose a random course
     if courses:
         # choose a random course
         # TODO prefer large courses
@@ -154,6 +167,7 @@ def index():
         random_course = None
         meeting_time = None
 
+    # Render the page
     return flask.render_template('index.html',
         random_course=random_course,
         meeting_time=meeting_time,
