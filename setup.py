@@ -16,5 +16,6 @@ setup(
         'ndg-httpsclient>=0.4',
         'pyOpenSSL>=0.13',
         'pyasn1>=0.1.6',
+        'lru-dict==1.1.4',
     ],
 )

@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<title>Classy - find courses that are meeting right now</title>
-<link rel="stylesheet" href="{{url_for("static", filename='style.css')}}">
-
-<div class=container>
+{% extends "base.html" %}
+{% block body %}
   <main>
     <p class="main-text">
       <big>
@@ -22,7 +19,11 @@
 
     {% if random_course %}
       <div class="course-info">
-        {# TODO: course title #}
+        <p>
+          Title:
+          {{ random_course.attributes.subjectCourse }}
+          {{ random_course.attributes.courseTitle }}
+        </p>
 
         <p>
           Instructor:
@@ -31,6 +32,11 @@
           {% else %}
             no instructor
           {% endfor %}
+        </p>
+
+        <p>
+          Term:
+          {{ current_term.attributes.description }}
         </p>
 
         <p>
@@ -54,28 +60,14 @@
       </div>
     {% endif %}
 
-    {#
-
-      Homepage:
-
-        Try again.
-        Choose a subject.
-
-      with an explicit subject:
-
-        try again
-        try a random subject
-        choose a different subject
-
-      with an explicit subject and no classes:
-
-        try a random subject
-
-    #}
     <p>
       <small>
         {% if number_of_courses > 1 %}
-          There are {{ number_of_courses - 1 }} other {{ subject_name }} courses
+          {% if number_of_courses == 2 %}
+            There is one other {{ subject_name }} course
+          {% else %}
+            There are {{ number_of_courses - 1 }} other {{ subject_name }} courses
+          {% endif %}
           meeting right now.
           <a href="">Try again</a>?
           Or try a <a href="?subject=random">different subject</a>.
@@ -85,7 +77,7 @@
           try a <a href="?subject=random">different subject</a>.
         {% elif number_of_courses == 0 %}
           Sorry. Try again later
-          or try <a href="?subject=random">different subject</a>.
+          or try a <a href="?subject=random">different subject</a>.
         {% endif %}
       </small>
     </p>
@@ -93,18 +85,14 @@
     {% if error %}
       <p>
         <small>
-          (Got an error: {{ error.message }})
+          {% if error.userMessage %}
+            (Got an error: {{ error.userMessage }})
+            <!-- {{ error.developerMessage }} -->
+          {% else %}
+            (Got an error: {{ error }})
+          {% endif %}
         </small>
       </p>
     {% endif %}
   </main>
-
-  <footer>
-    <p>
-      <small>
-        Provided for entertainment only |
-        <a href="https://github.com/osu-mist/classy-demo">View the source code</a>
-      </small>
-    </p>
-  </footer>
-</div>
+{% endblock %}

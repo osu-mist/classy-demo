@@ -21,7 +21,8 @@ Installation
 Configuration
 ----
 
-Register an application to use the Class Search API 
+Register an application to use the
+Class Search API, Course Subjects API, and Terms API
 at the [OSU Developer Portal][].
 
 Create a file called config.py containing your Client ID 
@@ -31,6 +32,13 @@ and Client Secret.
     CLIENT_SECRET="yourclientsecret"
 
 [OSU Developer Portal]: https://developer.oregonstate.edu/
+
+Testing
+----
+
+    % bin/python -m classy.tests
+
+This will run the unit tests for Classy.
 
 Running
 ----
@@ -43,7 +51,6 @@ is relative to the package directory (./classy in this example).
 BUGS
 ----
 
- * course titles are not shown because they are not yet returned by the API
- * subjects are hardcoded; they should be fetched using the course subjects API
  * retrieves the full course list on every request; should add some caching
  * could be smarter about choosing random subjects and courses
+ * doesn't understand that finals only meet during finals week

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Classy - pick a subject{% endblock %}
+{% block body %}
+  <main>
+    <ul class="subject-list">
+      {% for abbr, title in subjects|dictsort(true) %}
+        <li><a href="{{ url_for('index', subject=abbr) }}">{{ abbr }} - {{ title }}</a></li>
+      {% endfor %}
+    </ul>
+  </main>
+{% endblock body %}
