@@ -18,7 +18,7 @@ class Client(object):
         self.client_id = app.config['CLIENT_ID']
         self.client_secret = app.config['CLIENT_SECRET']
         self.endpoint = app.config['ENDPOINT']
-        self.token_endpoint = self.endpoint + '/class-search/token'
+        self.token_endpoint = self.endpoint + '/catalog/token'
 
     def get_url(self, url, params=None):
         access_token = self.access_token
@@ -55,16 +55,16 @@ class Client(object):
         if page_number is not None:
             params['page[number]'] = page_number
 
-        return self.get_url(self.endpoint+"/class-search", params=params)
+        return self.get_url(self.endpoint+"/catalog/courses", params=params)
 
     def term(self, id):
-        return self.get_url(self.endpoint+"/terms/"+urllib.quote(id))
+        return self.get_url(self.endpoint+"/catalog/terms/"+urllib.quote(id))
 
     def open_terms(self):
-        return self.get_url(self.endpoint+"/terms/open")
+        return self.get_url(self.endpoint+"/catalog/terms/open")
 
     def subjects(self):
-        return self.get_url(self.endpoint+"/course-subjects")
+        return self.get_url(self.endpoint+"/catalog/subjects")
 
     @cached_property
     def access_token(self):
