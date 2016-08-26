@@ -48,6 +48,29 @@ Running
 Note that the path to the configuration file in `CLASSY_CONFIG`
 is relative to the package directory (./classy in this example).
 
+Docker
+----
+
+### Building a docker image
+
+    # docker build --tag=classy .
+
+This builds a docker image containing classy and all its dependencies.
+
+### Running the docker container
+
+    # docker run -p 5001:8000 -e CLASSY_CLIENT_ID=xxx -e CLASSY_CLIENT_SECRET=xxx classy
+
+This runs the container and passes it the api credentials via environment variables.
+The `-p` option forwards port 5001 on the host machine to port 8000 inside the container.
+The `-e` option sets an environment variable.
+The last argument is the tag we specified when building the image.
+
+    # docker run -p 5001:8000 -v "$PWD"/config.py:/src/config.py:ro -e CLASSY_CONFIG=/src/config.py classy
+
+You can also supply a config file from outside the container.
+The `-v` option mounts ./config.py into the container as /src/config.py.
+
 BUGS
 ----
 
