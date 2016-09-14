@@ -55,21 +55,21 @@ Docker
 
     # docker build --tag=classy .
 
-This builds a docker image containing classy and all its dependencies.
+This builds a docker image containing classy and all its dependencies,
+giving it the name 'classy'.
 
 ### Running the docker container
 
-    # docker run -p 5001:8000 -e CLASSY_CLIENT_ID=xxx -e CLASSY_CLIENT_SECRET=xxx classy
+    # docker run \
+    >  --publish 5001:8000 \
+    >  --volume "$PWD"/config.py:/src/config.py:ro \
+    >  classy
 
-This runs the container and passes it the api credentials via environment variables.
-The `-p` option forwards port 5001 on the host machine to port 8000 inside the container.
-The `-e` option sets an environment variable.
-The last argument is the tag we specified when building the image.
-
-    # docker run -p 5001:8000 -v "$PWD"/config.py:/src/config.py:ro -e CLASSY_CONFIG=/src/config.py classy
-
-You can also supply a config file from outside the container.
-The `-v` option mounts ./config.py into the container as /src/config.py.
+This runs the container and passing in a configuration file.
+(See Configuration above. Note that the dockerfile automatically sets CLASSY\_CONFIG=/src/config.py.)
+The `--publish` option forwards port 5001 on the host machine to port 8000 inside the container.
+The `--volume` option mounts ./config.py into the container as /src/config.py.
+The last argument is the tag you specified when building the image.
 
 BUGS
 ----

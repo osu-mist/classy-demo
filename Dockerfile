@@ -10,6 +10,6 @@ ADD classy /src/classy
 RUN pip install -e /src
 
 ENV TZ America/Los_Angeles
-ENV CLASSY_CONFIG docker_config.py
+ENV CLASSY_CONFIG /src/config.py
 USER nobody:nogroup
 CMD ["gunicorn", "--bind", ":8000", "classy.app:app"]
