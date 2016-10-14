@@ -64,11 +64,6 @@ def get_current_term(client, _now=datetime.now):
     terms = client.open_terms()
     terms = terms.get(u'data', [])
 
-    # fetch the actual term data
-    # XXX
-    for i, term in enumerate(terms):
-        terms[i] = client.term(term[u'id']).get(u'data', {})
-
     # try to find the term that's happening right now
     for term in terms:
         start_date = term[u'attributes'].get(u'startDate', u'xxx')
