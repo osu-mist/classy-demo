@@ -18,7 +18,7 @@ class Client(object):
         self.client_id = app.config['CLIENT_ID']
         self.client_secret = app.config['CLIENT_SECRET']
         self.endpoint = app.config['ENDPOINT']
-        self.token_endpoint = self.endpoint + '/catalog/token'
+        self.token_endpoint = app.config['TOKEN_API']
 
     def get_url(self, url, params=None):
         access_token = self.access_token
