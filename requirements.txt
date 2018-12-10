@@ -15,7 +15,7 @@ ndg-httpsclient==0.4.2
 pyasn1==0.1.9
 pycparser==2.14
 pyOpenSSL==16.1.0
-requests==2.11.1
+requests==2.20.1
 six==1.10.0
 virtualenv==15.0.3
 Werkzeug==0.11.10
