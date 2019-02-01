@@ -3,7 +3,7 @@ cffi==1.7.0
 click==6.6
 cryptography==1.5
 enum34==1.1.6
-Flask==0.11.1
+Flask== 0.12.3
 gunicorn==19.6.0
 idna==2.1
 ipaddress==1.0.16
@@ -14,7 +14,7 @@ MarkupSafe==0.23
 ndg-httpsclient==0.4.2
 pyasn1==0.1.9
 pycparser==2.14
-pyOpenSSL==16.1.0
+pyOpenSSL==17.5.0
 requests==2.20.1
 six==1.10.0
 virtualenv==15.0.3
